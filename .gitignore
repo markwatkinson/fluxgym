@@ -7,3 +7,5 @@ outputs
 resume.sh 
 train.sh 
 sd-scripts 
+
+env
