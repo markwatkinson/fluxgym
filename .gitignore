@@ -1,0 +1,9 @@
+datasets
+dataset.toml
+*.safetensors
+*.sft 
+outputs
+
+resume.sh 
+train.sh 
+sd-scripts 
