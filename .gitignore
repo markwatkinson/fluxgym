@@ -6,6 +6,7 @@ outputs
 
 resume.sh 
 train.sh 
+sample_prompts.txt
 sd-scripts 
 
 env
