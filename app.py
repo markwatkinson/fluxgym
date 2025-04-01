@@ -483,7 +483,8 @@ def gen_sh(
   --discrete_flow_shift 3.1582 {line_break}
   --model_prediction_type raw {line_break}
   --guidance_scale {guidance_scale} {line_break}
-  --loss_type l2 {line_break}"""
+  --loss_type l2 {line_break}
+  --blocks_to_swap 34 {line_break}"""
    
 
 
