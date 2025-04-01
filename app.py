@@ -468,7 +468,8 @@ def gen_sh(
   --save_precision bf16 {line_break}
   --network_module networks.lora_flux {line_break}
   --network_dim {network_dim} {line_break}
-  {optimizer}{sample}
+  {optimizer}
+  {sample}
   --learning_rate {learning_rate} {line_break}
   --cache_text_encoder_outputs {line_break}
   --cache_text_encoder_outputs_to_disk {line_break}
