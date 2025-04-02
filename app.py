@@ -221,10 +221,10 @@ def resize_image(image_path, output_path, size):
         width, height = img.size
         if width < height:
             new_width = size
-            new_height = int((size/width) * height)
+            new_height = round((size/width) * height)
         else:
             new_height = size
-            new_width = int((size/height) * width)
+            new_width = round((size/height) * width)
         print(f"resize {image_path} : {new_width}x{new_height}")
         img_resized = img.resize((new_width, new_height), Image.Resampling.LANCZOS)
         img_resized.save(output_path)
