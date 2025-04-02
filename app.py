@@ -484,7 +484,8 @@ def gen_sh(
   --discrete_flow_shift 3.1582 {line_break}
   --model_prediction_type raw {line_break}
   --guidance_scale {guidance_scale} {line_break}
-  --loss_type l2 {line_break}"""
+  --loss_type l2 {line_break}
+  --save_state {line_break}"""
    
 
 
@@ -511,6 +512,24 @@ def gen_sh(
         sh = sh + "\n  " + advanced_flags_str
 
     return sh
+
+def gen_resume(train_script, output_name):
+    resume_script = f"""#!/usr/bin/env bash
+SCRIPT_DIR=$( cd -- "$( dirname -- "${{BASH_SOURCE[0]}}" )" &> /dev/null && pwd )
+
+state=$(find "$SCRIPT_DIR" -type f -name "train_state.json" -printf "%T+\\t%p\\n" | sort -r | head -n 1 | awk '{{print $2}}')
+if [ "$state" = "" ]; then
+  echo "Could not find valid training_state.json in {output_name}"
+  exit 1
+fi
+datadir=$(dirname $state)
+echo "Resuming from $datadir"
+
+{train_script.strip()}
+  --resume "$datadir"
+"""
+    return resume_script
+
 
 def gen_toml(
   dataset_folder,
@@ -595,6 +614,12 @@ def start_training(
     with open(sh_filepath, 'w', encoding="utf-8") as file:
         file.write(train_script)
     gr.Info(f"Generated train script at {sh_filename}")
+
+    resume_sh_filepath = resolve_path_without_quotes(f"outputs/{output_name}/resume.sh")
+    with open(resume_sh_filepath, 'w', encoding='utf-8') as file:
+        file.write(gen_resume(train_script, output_name))
+    gr.Info(f"Generated resume script at {sh_filename}")
+
 
 
     dataset_path = resolve_path_without_quotes(f"outputs/{output_name}/dataset.toml")
@@ -991,7 +1016,7 @@ with gr.Blocks(elem_id="app", theme=theme, css=css, fill_width=True) as demo:
                     with gr.Column(min_width=300):
                         learning_rate = gr.Textbox(label="--learning_rate", info="Learning Rate", value="8e-4", interactive=True)
                     with gr.Column(min_width=300):
-                        save_every_n_epochs = gr.Number(label="--save_every_n_epochs", info="Save every N epochs", value=4, interactive=True)
+                        save_every_n_epochs = gr.Number(label="--save_every_n_epochs", info="Save every N epochs", value=1, interactive=True)
                     with gr.Column(min_width=300):
                         guidance_scale = gr.Number(label="--guidance_scale", info="Guidance Scale", value=1.0, interactive=True)
                     with gr.Column(min_width=300):
